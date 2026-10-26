@@ -1,0 +1,13 @@
+.page {
+    max-width: 600px;
+    flex-direction: column;
+    gap: 5px;
+    box-sizing: border-box;
+    max-width: 640px;
+    height: 660px;
+    margin: 30px auto;
+    background: #e9ede7;
+    border: 2px solid brown;
+    border-radius: 18px;
+    padding: 50px 50px 20px 50px;
+}

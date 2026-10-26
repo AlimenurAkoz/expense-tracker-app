@@ -1,72 +1,90 @@
 <div class="page">
-    <h1>Harcama Takibim</h1>
-    <form (ngSubmit)="add()">
-        <div class="input-text">
-            <label for="date">Tarih<span class="required">*</span></label>
-            <input type="date" id="date" [(ngModel)]="date" name="date" placeholder="gg.aa.yyyy" />
+    <aside class="sidebar">
+        <h1>Harcama Takibim</h1>
+        <form (ngSubmit)="add()">
+            <div class="input-text">
+                <label for="date">Tarih<span class="required">*</span></label>
+                <input type="date" id="date" [(ngModel)]="date" name="date" placeholder="gg.aa.yyyy" />
+            </div>
+            <div class="input-text">
+                <label for="TransactionType">İşlem Türü<span class="required">*</span></label>
+                <select id="TransactionType" name="type" [(ngModel)]="type">
+                    <option value="" disabled selected>Gelir/Gider seçimi yapınız.</option>
+                    <option value="income">Gelir</option>
+                    <option value="expense">Gider</option>
+                </select>
+            </div>
+            <div class="input-text">
+                <label for="explanation">
+                    Açıklama @if(type == 'expense') {
+                    <span class="required">*</span>
+                    }
+                </label>
+                <input type="text" id="explanation" [(ngModel)]="explanation" name="explanation"
+                    [placeholder]="type === 'expense' ? 'Açıklama (Zorunlu)' : 'Açıklama (İsteğe bağlı)'" />
+            </div>
+            <div class="input-text">
+                <label for="amount">Tutar<span class="required">*</span></label>
+                <input type="number" id="amount" [(ngModel)]="amount" name="amount" placeholder="TL" min="0.01"
+                    step="any" />
+            </div>
+            <button class="add-btn" type="submit" name="addBtn">Ekle</button>
+        </form>
+    </aside>
+    <section class="content">
+        @if (transactions.length == 0){
+        <div class="empty-list">
+            <p>Henüz gelir ve gider eklenmedi.</p>
         </div>
-        <div class="input-text">
-            <label for="TransactionType">İşlem Türü<span class="required">*</span></label>
-            <select id="TransactionType" name="type" [(ngModel)]="type">
-                <option value="" disabled selected>Gelir/Gider seçimi yapınız.</option>
-                <option value="income">Gelir</option>
-                <option value="expense">Gider</option>
-            </select>
+        }@else{
+        <div class="search">
+            <input type="text" id="searchTransaction" [(ngModel)]="searchTransaction"
+                placeholder="Açıklama metnini giriniz." />
+            @if (searchTransaction){
+            <button type="button" class="clear" (click)="searchTransaction=''">x</button>
+            }
         </div>
-        <div class="input-text">
-            <label for="explanation">Açıklama<span class="required">*</span></label>
-            <input type="text" id="explanation" [(ngModel)]="explanation" name="explanation"
-                [placeholder]="type === 'expense' ? 'Açıklama (Zorunlu)' : 'Açıklama (İsteğe bağlı)'" />
+        <div class="table-div">
+            <table>
+                <tr>
+                    <th>Sıra</th>
+                    <th>Tarih</th>
+                    <th>Tür</th>
+                    <th>Açıklama</th>
+                    <th>Tutar</th>
+                    <th>Sil</th>
+                </tr>
+                @for (transaction of filterTransaction(); track transaction.id; let i = $index){
+                <tr [id]="'row-' + transaction.id" [class.highlight]="transaction.id == highlightedId">
+                    <td>{{ i+1 }}</td>
+                    <td>{{ transaction.date }}</td>
+                    <td>{{ transaction.type == 'income' ? 'Gelir' : 'Gider'}}</td>
+                    <td>{{ transaction.explanation }}</td>
+                    <td [class.income]="transaction.type === 'income'" [class.expense]="transaction.type === 'expense'">
+                        @if (transaction.type === 'income') {
+                        +{{ transaction.amount }} ₺
+                        } @else {
+                        -{{ transaction.amount }} ₺
+                        }
+                    </td>
+                    <td>
+                        <button class="delete-btn" type="button" (click)="delete(transaction)">🗑️</button>
+                    </td>
+                </tr>
+                }
+                @empty{
+                <tr>
+                    <td colspan="6">Böyle bir işlem eklenmemiş.</td>
+                </tr>
+                }
+            </table>
         </div>
-        <div class="input-text">
-            <label for="amount">Tutar<span class="required">*</span></label>
-            <input type="number" id="amount" [(ngModel)]="amount" name="amount" placeholder="TL" min="0.01"
-                step="any" />
+        <div class="lower-part">
+            <p class="total-income">Toplam Gelir: {{totalIncome()}}</p>
+            <p class="total-expense">Toplam Gider: {{totalExpense()}}</p>
+            <p class="balance">Bakiye: {{balance()}}</p>
+            <p class="transaction-num">İşlem Sayısı: {{transactionNum()}}</p>
         </div>
-        <button class="add-btn" type="submit" name="addBtn">Ekle</button>
-    </form>
-    @if (transactions.length == 0){
-    <div class="empty-list">
-        <p>Henüz gelir ve gider eklenmedi.</p>
-    </div>
-    }@else{
-    <div class="search">
-        <input type="text" id="searchTransaction" [(ngModel)]="searchTransaction"
-            placeholder="Açıklama metnini giriniz." />
-        @if (searchTransaction){
-        <button type="button" class="clear" (click)="searchTransaction=''">x</button>
         }
-    </div>
-    <div class="table-div">
-        <table>
-            <tr>
-                <th>Sıra</th>
-                <th>Açıklama</th>
-                <th>Tutar</th>
-                <th>Sil</th>
-            </tr>
-            @for (transaction of filterTransaction(); track transaction.id){
-            <tr [id]="'row-' + transaction.id" [class.highlight]="transaction.id == highlightedId">
-                <td>{{ transaction.id }}</td>
-                <td>{{ transaction.explanation }}</td>
-                <td>{{ transaction.amount }}</td>
-                <td>
-                    <button class="delete-btn" type="button" (click)="delete(transaction)">🗑️</button>
-                </td>
-            </tr>
-            }
-            @empty{
-            <tr>
-                <td colspan="4">Böyle bir işlem eklenmemiş.</td>
-            </tr>
-            }
-        </table>
-    </div>
-    <div class="lower-part">
-        <p class="total-income">Toplam Gelir: {{totalIncome()}}</p>
-        <p class="total-expense">Toplam Gider: {{totalExpense()}}</p>
-        <p class="balance">Bakiye: {{balance()}}</p>
-        <p class="transaction-num">İşlem Sayısı: {{transactionNum()}}</p>
-    </div>
-    }
+    </section>
 </div>
