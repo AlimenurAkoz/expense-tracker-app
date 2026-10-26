@@ -1,10 +1,12 @@
 <div class="page">
     <aside class="sidebar">
-        <h1>Harcama Takibim</h1>
-        <form (ngSubmit)="add()">
+        <div class="title">
+            <h1>Harcama Takibim</h1>
+        </div>
+        <form class="form-input" (ngSubmit)="add()">
             <div class="input-text">
                 <label for="date">Tarih<span class="required">*</span></label>
-                <input type="date" id="date" [(ngModel)]="date" name="date" placeholder="gg.aa.yyyy" />
+                <input type="date" id="date" [(ngModel)]="date" name="date" placeholder="gg.aa.yyyy" [max]="today()"/>
             </div>
             <div class="input-text">
                 <label for="TransactionType">İşlem Türü<span class="required">*</span></label>
@@ -21,7 +23,7 @@
                     }
                 </label>
                 <input type="text" id="explanation" [(ngModel)]="explanation" name="explanation"
-                    [placeholder]="type === 'expense' ? 'Açıklama (Zorunlu)' : 'Açıklama (İsteğe bağlı)'" />
+                    [placeholder]="type === 'expense' ? '(Zorunlu)' : '(İsteğe bağlı)'" />
             </div>
             <div class="input-text">
                 <label for="amount">Tutar<span class="required">*</span></label>
@@ -38,8 +40,8 @@
         </div>
         }@else{
         <div class="search">
-            <input type="text" id="searchTransaction" [(ngModel)]="searchTransaction"
-                placeholder="Açıklama metnini giriniz." />
+            <input class="search-input" type="text" id="searchTransaction" [(ngModel)]="searchTransaction"
+                placeholder="Aramak istediğiniz açıklama metnini giriniz." />
             @if (searchTransaction){
             <button type="button" class="clear" (click)="searchTransaction=''">x</button>
             }
@@ -55,7 +57,9 @@
                     <th>Sil</th>
                 </tr>
                 @for (transaction of filterTransaction(); track transaction.id; let i = $index){
-                <tr [id]="'row-' + transaction.id" [class.highlight]="transaction.id == highlightedId">
+                <tr [id]="'row-' + transaction.id" [class.highlight]="transaction.id === highlightedId"
+                    [class.income-row]="transaction.type === 'income'"
+                    [class.expense-row]="transaction.type === 'expense'">
                     <td>{{ i+1 }}</td>
                     <td>{{ transaction.date }}</td>
                     <td>{{ transaction.type == 'income' ? 'Gelir' : 'Gider'}}</td>

@@ -1,13 +1,248 @@
+@import url('https://fonts.googleapis.com/css2?family=Engagement&display=swap');
+
 .page {
-    max-width: 600px;
+    display: grid;
+    margin: 60px;
+    grid-template-columns: 330px 1fr;
+    gap: 40px;
+    padding: 0 16px;
+}
+
+.title {
+    padding-left: 15px;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+}
+
+.title h1 {
+    font-family: "Engagement", cursive;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 100px;
+    margin: 0;
+    text-shadow: 15px;
+    text-align: left;
+}
+
+.sidebar,
+.content {
+    padding: 24px;
+    height: 600px;
+    background: rgb(149, 235, 201);
+    border: 2px solid rgb(41, 65, 55);
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    box-sizing: border-box;
+}
+
+.form-input {
+    display: flex;
     flex-direction: column;
     gap: 5px;
+    flex: 1;
+}
+
+.add-btn {
+    background: rgb(145, 16, 16);
+    color: rgb(149, 235, 201);
+    border: 2px solid rgb(149, 235, 201);
+    border-radius: 15px;
+    width: 100px;
+    height: 30px;
+    margin: 15px auto 0 auto;
+    font-weight: bold;
+}
+
+.add-btn:hover {
+    background: rgb(115, 10, 10);
+}
+
+.input-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.input-text label {
+    font-size: 16px;
+    color: rgb(145, 16, 16);
+}
+
+.input-text input,
+.input-text select {
+    padding: 5px;
+    border: 1px solid rgb(130, 202, 213);
+    border-radius: 8px;
+    font-size: 14px;
+    width: 100%;
     box-sizing: border-box;
-    max-width: 640px;
-    height: 660px;
-    margin: 30px auto;
-    background: #e9ede7;
-    border: 2px solid brown;
-    border-radius: 18px;
-    padding: 50px 50px 20px 50px;
+    background: rgb(254, 180, 180);
+}
+
+::placeholder {
+    color: rgb(145, 16, 16);
+}
+
+/*TL inputunda çıkan + ve - işaretlerini kaldırma işlemi: */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.search {
+    display: flex;
+    gap: 10px;
+    position: relative;
+}
+
+.search-input {
+    flex: 1;
+}
+
+.required {
+    color: rgb(145, 16, 16);
+    margin-left: 2px;
+}
+
+.empty-list {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgb(41, 65, 55);
+    font-size: 18px;
+}
+
+.search input {
+    flex: 1;
+    padding: 8px 40px 8px 12px;
+    border: 1px solid rgb(41, 65, 55);
+    border-radius: 8px;
+    font-size: 14px;
+    background: white;
+    box-sizing: border-box;
+}
+
+.clear {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: none;
+    color: rgb(145, 16, 16);
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.table-div {
+    flex: 1;
+    overflow: auto;
+    background: white;
+    border: 2px solid rgb(41, 65, 55);
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid rgb(200, 220, 210);
+    border-right: 1px solid rgb(200, 220, 210);
+}
+
+th:last-child,
+td:last-child {
+    border-right: none;
+    text-align: center;
+}
+
+th:first-child,
+td:first-child {
+    width: 50px;
+    text-align: center;
+}
+
+th {
+    position: sticky;
+    top: 0;
+    background: rgb(47, 77, 64);
+    color: rgb(149, 235, 201);
+    font-weight: 600;
+}
+
+.income {
+    color: rgb(21, 128, 61);
+    font-weight: 600;
+}
+
+.expense {
+    color: rgb(145, 16, 16);
+    font-weight: 600;
+}
+
+.delete-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.delete-btn:hover {
+    background: rgb(254, 180, 180);
+}
+
+.lower-part {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.lower-part p {
+    margin: 0;
+    padding: 12px;
+    background: rgb(254, 180, 180);
+    border: 2px solid rgb(41, 65, 55);
+    border-radius: 10px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.total-income {
+    color: rgb(21, 128, 61);
+}
+
+.total-expense {
+    color: rgb(145, 16, 16);
+}
+
+.balance {
+    font-weight: 600;
+}
+
+.income-row {
+    background: rgb(220, 252, 231);
+}
+
+.expense-row {
+    background: rgb(254, 226, 226);
+}
+
+.highlight {
+    background: rgb(254, 249, 195);
 }

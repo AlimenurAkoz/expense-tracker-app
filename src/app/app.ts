@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Transaction, TransactionType } from './models/transaction';
-//import Swal from 'sweetalert2';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-root',
@@ -9,6 +9,7 @@ import { Transaction, TransactionType } from './models/transaction';
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
+
 export class App {
   protected readonly title = signal('expense-tracker-app');
   date: string = '';
@@ -19,9 +20,27 @@ export class App {
   highlightedId: number | null = null;
   explanation: string = '';
   searchTransaction: string = '';
+
+  constructor() {
+    this.load();
+  }
+
+  today(): string {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
   add() {
+    const explanation = this.explanation.trim();
     if (!this.date) {
       alert('Lütfen bir tarih seçiniz.');
+      return;
+    }
+    if (this.date > this.today()) {
+      alert('İleri tarihli işlem eklenemez.');
       return;
     }
     if (!this.type) {
@@ -42,15 +61,67 @@ export class App {
       alert('Gider işlemleri için açıklama girmek zorunludur!');
       return;
     }
+
+    const newTransaction: Transaction = { id: this.nextId, date: this.date, explanation: explanation, amount: this.amount, type: this.type };
+    this.transactions.push(newTransaction);
+    this.nextId++;
+    this.date = '';
+    this.type = '';
+    this.explanation = '';
+    this.amount = null;
+    this.save();
   }
 
-  delete(transaction: Transaction) { }
-  totalIncome() { }
-  totalExpense() { }
-  balance() { }
-  transactionNum() { }
+  delete(transaction: Transaction) {
+    this.transactions = this.transactions.filter(t => t.id !== transaction.id);
+    this.save();
+  }
+
+  totalIncome(): number {
+    return this.transactions
+      .filter(t => t.type === 'income')
+      .reduce((sum, t) => sum + t.amount, 0);
+  }
+
+  totalExpense(): number {
+    return this.transactions
+      .filter(t => t.type === 'expense')
+      .reduce((sum, t) => sum + t.amount, 0);
+  }
+
+  balance(): number {
+    return this.totalIncome() - this.totalExpense();
+  }
+
+  transactionNum(): number {
+    return this.transactions.length;
+  }
+
   filterTransaction(): Transaction[] {
     const searchText = this.searchTransaction.trim().toLocaleLowerCase('tr');
-    return this.transactions.filter(p => p.explanation.toLocaleLowerCase('tr').includes(searchText));
+    return this.transactions.filter(t => t.explanation.toLocaleLowerCase('tr').includes(searchText));
   }
+
+  save() {
+    localStorage.setItem('transactions', JSON.stringify(this.transactions));
+  }
+
+  load() {
+    const data = localStorage.getItem('transactions');
+    if (!data) {
+      return;
+    }
+
+    try {
+      this.transactions = JSON.parse(data);
+    } catch {
+      this.transactions = [];
+    }
+
+    if (this.transactions.length > 0) {
+      const maxId = Math.max(...this.transactions.map(t => t.id));
+      this.nextId = maxId + 1;
+    }
+  }
+
 }
