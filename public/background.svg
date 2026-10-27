@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
+  <defs>
+    <!-- Madeni para (₺) -->
+    <g id="coin">
+      <circle cx="0" cy="0" r="22" fill="#96EAC9" stroke="#2F4F45" stroke-width="2.5"/>
+      <circle cx="0" cy="0" r="16" fill="none" stroke="#2F4F45" stroke-width="1.5" stroke-dasharray="3 3"/>
+      <path d="M-3,-11 V9 Q9,9 9,-2 M-9,-3 L4,-7 M-9,3 L4,-1" fill="none" stroke="#2F4F45" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+    <!-- Cüzdan -->
+    <g id="wallet">
+      <rect x="-26" y="-18" width="52" height="36" rx="6" fill="#FBB0B0" stroke="#8B1010" stroke-width="2.5"/>
+      <path d="M-26,-8 H26" stroke="#8B1010" stroke-width="2"/>
+      <rect x="10" y="-3" width="20" height="14" rx="4" fill="#FDE0E0" stroke="#8B1010" stroke-width="2"/>
+      <circle cx="18" cy="4" r="2.5" fill="#8B1010"/>
+    </g>
+    <!-- Fiş -->
+    <g id="receipt">
+      <path d="M-16,-24 H16 V20 L12,24 L8,20 L4,24 L0,20 L-4,24 L-8,20 L-12,24 L-16,20 Z" fill="#ffffff" stroke="#2F4F45" stroke-width="2.5" stroke-linejoin="round"/>
+      <path d="M-9,-14 H9 M-9,-6 H9 M-9,2 H3 M-9,10 H6" stroke="#2F4F45" stroke-width="2" stroke-linecap="round"/>
+    </g>
+    <!-- Yükselen grafik -->
+    <g id="chart">
+      <path d="M-24,22 V-22 M-24,22 H24" stroke="#2F4F45" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      <polyline points="-18,14 -6,2 4,8 18,-14" fill="none" stroke="#1E8A5A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M10,-15 L19,-15 L19,-6" fill="none" stroke="#1E8A5A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+    <!-- Artı / eksi -->
+    <g id="plus"><path d="M-7,0 H7 M0,-7 V7" stroke="#1E8A5A" stroke-width="3" stroke-linecap="round"/></g>
+    <g id="minus"><path d="M-7,0 H7" stroke="#8B1010" stroke-width="3" stroke-linecap="round"/></g>
+  </defs>
+
+  <rect width="400" height="400" fill="#EEFBF5"/>
+
+  <g opacity="0.35">
+    <use href="#coin" transform="translate(70 70) rotate(-12)"/>
+    <use href="#wallet" transform="translate(280 60) rotate(8)"/>
+    <use href="#receipt" transform="translate(190 175) rotate(-8)"/>
+    <use href="#chart" transform="translate(70 270) rotate(4)"/>
+    <use href="#coin" transform="translate(320 240) rotate(15) scale(0.8)"/>
+    <use href="#wallet" transform="translate(220 335) rotate(-10) scale(0.85)"/>
+    <use href="#receipt" transform="translate(345 345) rotate(12) scale(0.8)"/>
+    <use href="#coin" transform="translate(140 360) scale(0.6)"/>
+
+    <use href="#plus" transform="translate(170 50)"/>
+    <use href="#minus" transform="translate(370 150)"/>
+    <use href="#plus" transform="translate(40 175)"/>
+    <use href="#minus" transform="translate(120 140)"/>
+    <use href="#plus" transform="translate(290 165)"/>
+    <use href="#minus" transform="translate(150 260)"/>
+    <use href="#plus" transform="translate(310 300) scale(0.8)"/>
+    <use href="#minus" transform="translate(30 370) scale(0.8)"/>
+  </g>
+</svg>

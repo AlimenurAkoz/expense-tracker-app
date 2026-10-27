@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy, inject, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Transaction, TransactionType } from './models/transaction';
 import Swal from 'sweetalert2';
@@ -7,9 +7,9 @@ import Swal from 'sweetalert2';
   selector: 'app-root',
   imports: [FormsModule],
   templateUrl: './app.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './app.css',
 })
-
 export class App {
   protected readonly title = signal('expense-tracker-app');
   date: string = '';
@@ -20,6 +20,7 @@ export class App {
   highlightedId: number | null = null;
   explanation: string = '';
   searchTransaction: string = '';
+  private cdr = inject(ChangeDetectorRef);
 
   constructor() {
     this.load();
@@ -34,35 +35,41 @@ export class App {
   }
 
   add() {
-    const explanation = this.explanation.trim();
+    const explanation =  this.capitalize(this.explanation.trim());
     if (!this.date) {
-      alert('Lütfen bir tarih seçiniz.');
+      this.showError('Lütfen bir tarih seçiniz.');
       return;
     }
     if (this.date > this.today()) {
-      alert('İleri tarihli işlem eklenemez.');
+      this.showError('İleri tarihli işlem eklenemez.');
       return;
     }
     if (!this.type) {
-      alert('Lütfen gelir veya gider türünü seçiniz.');
+      this.showError('Lütfen gelir veya gider türünü seçiniz.');
       return;
     }
     if (this.amount === null) {
-      alert('Lütfen bir tutar giriniz.');
+      this.showError('Lütfen bir tutar giriniz.');
       return;
     }
 
     if (this.amount <= 0) {
-      alert('Tutar 0 veya "-"(negatif) olamaz!');
+      this.showError('Tutar 0 veya "-"(negatif) olamaz!');
       return;
     }
 
     if (this.type === 'expense' && !this.explanation.trim()) {
-      alert('Gider işlemleri için açıklama girmek zorunludur!');
+      this.showError('Gider işlemleri için açıklama girmek zorunludur!');
       return;
     }
 
-    const newTransaction: Transaction = { id: this.nextId, date: this.date, explanation: explanation, amount: this.amount, type: this.type };
+    const newTransaction: Transaction = {
+      id: this.nextId,
+      date: this.date,
+      explanation: explanation,
+      amount: this.amount,
+      type: this.type,
+    };
     this.transactions.push(newTransaction);
     this.nextId++;
     this.date = '';
@@ -73,19 +80,36 @@ export class App {
   }
 
   delete(transaction: Transaction) {
-    this.transactions = this.transactions.filter(t => t.id !== transaction.id);
-    this.save();
+    Swal.fire({
+      icon: 'question',
+      title: 'Silinsin mi?',
+      text: `"${transaction.explanation || 'Bu işlem'}" silinecek.`,
+      showCancelButton: true,
+      confirmButtonText: 'Sil',
+      cancelButtonText: 'Vazgeç',
+      confirmButtonColor: 'rgb(145, 16, 16)',
+      cancelButtonColor: 'rgb(41, 65, 55)',
+      background: 'rgb(149, 235, 201)',
+      color: 'rgb(41, 65, 55)'
+    }).then(result => {
+      if (result.isConfirmed) {
+        this.transactions = this.transactions.filter(t => t.id !== transaction.id);
+        this.save();
+        this.cdr.markForCheck();
+        this.showSuccess('İşlem silindi');
+      }
+    });
   }
 
   totalIncome(): number {
     return this.transactions
-      .filter(t => t.type === 'income')
+      .filter((t) => t.type === 'income')
       .reduce((sum, t) => sum + t.amount, 0);
   }
 
   totalExpense(): number {
     return this.transactions
-      .filter(t => t.type === 'expense')
+      .filter((t) => t.type === 'expense')
       .reduce((sum, t) => sum + t.amount, 0);
   }
 
@@ -99,7 +123,9 @@ export class App {
 
   filterTransaction(): Transaction[] {
     const searchText = this.searchTransaction.trim().toLocaleLowerCase('tr');
-    return this.transactions.filter(t => t.explanation.toLocaleLowerCase('tr').includes(searchText));
+    return this.transactions.filter((t) =>
+      t.explanation.toLocaleLowerCase('tr').includes(searchText),
+    );
   }
 
   save() {
@@ -119,9 +145,37 @@ export class App {
     }
 
     if (this.transactions.length > 0) {
-      const maxId = Math.max(...this.transactions.map(t => t.id));
+      const maxId = Math.max(...this.transactions.map((t) => t.id));
       this.nextId = maxId + 1;
     }
   }
+  showError(message: string) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Eksik bilgi',
+      text: message,
+      confirmButtonText: 'Tamam',
+      confirmButtonColor: 'rgb(145, 16, 16)',
+      background: 'rgb(149, 235, 201)',
+      color: 'rgb(41, 65, 55)'
+    });
+  }
 
+  capitalize(text: string): string {
+    if (!text) {
+      return text;
+    }
+    return text.charAt(0).toLocaleUpperCase('tr') + text.slice(1);
+  }
+
+  showSuccess(message: string) {
+    Swal.fire({
+      toast: true,
+      position: 'top-end',
+      icon: 'success',
+      title: message,
+      showConfirmButton: false,
+      timer: 1500
+    });
+  }
 }

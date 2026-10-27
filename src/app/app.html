@@ -22,7 +22,7 @@
                     <span class="required">*</span>
                     }
                 </label>
-                <input type="text" id="explanation" [(ngModel)]="explanation" name="explanation"
+                <input type="text" id="explanation" [(ngModel)]="explanation" name="explanation" autocomplete="off" +
                     [placeholder]="type === 'expense' ? '(Zorunlu)' : '(İsteğe bağlı)'" />
             </div>
             <div class="input-text">
