@@ -1,4 +1,4 @@
-import { Component, signal, ChangeDetectionStrategy, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Transaction, TransactionType } from './models/transaction';
 import Swal from 'sweetalert2';
@@ -11,7 +11,6 @@ import Swal from 'sweetalert2';
   styleUrl: './app.css',
 })
 export class App {
-  protected readonly title = signal('expense-tracker-app');
   date: string = '';
   type: TransactionType | '' = '';
   amount: number | null = null;
@@ -70,6 +69,7 @@ export class App {
       amount: this.amount,
       type: this.type,
     };
+
     this.transactions.push(newTransaction);
     this.nextId++;
     this.date = '';
@@ -82,7 +82,7 @@ export class App {
   delete(transaction: Transaction) {
     Swal.fire({
       icon: 'question',
-      title: 'Silinsin mi?',
+      title: 'İşlem silinsin mi?',
       text: `"${transaction.explanation || 'Bu işlem'}" silinecek.`,
       showCancelButton: true,
       confirmButtonText: 'Sil',
