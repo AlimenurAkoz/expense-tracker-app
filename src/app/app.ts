@@ -17,6 +17,7 @@ export class App {
   transactions: Transaction[] = [];
   nextId: number = 1;
   highlightedId: number | null = null;
+  private highlightTimer?: ReturnType<typeof setTimeout>;
   explanation: string = '';
   searchTransaction: string = '';
   private cdr = inject(ChangeDetectorRef);
@@ -34,7 +35,7 @@ export class App {
   }
 
   add() {
-    const explanation =  this.capitalize(this.explanation.trim());
+    const explanation = this.capitalize(this.explanation.trim());
     if (!this.date) {
       this.showError('Lütfen bir tarih seçiniz.');
       return;
@@ -71,12 +72,22 @@ export class App {
     };
 
     this.transactions.push(newTransaction);
+    this.highlightedId = newTransaction.id;
     this.nextId++;
     this.date = '';
     this.type = '';
     this.explanation = '';
     this.amount = null;
     this.save();
+    this.cdr.detectChanges();
+    document.getElementById('row-' + newTransaction.id)
+      ?.scrollIntoView({ behavior: 'smooth' });
+    clearTimeout(this.highlightTimer);
+    this.highlightTimer = setTimeout(() => {
+      this.highlightedId = null;
+      this.cdr.markForCheck();
+    }, 2000);
+
   }
 
   delete(transaction: Transaction) {

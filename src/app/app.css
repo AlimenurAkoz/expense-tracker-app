@@ -172,6 +172,10 @@ th {
     font-weight: 600;
 }
 
+tr {
+    transition: background-color 0.8s ease;
+}
+
 .income {
     color: rgb(21, 128, 61);
     font-weight: 600;
